@@ -28,7 +28,12 @@ int main() {
 
     mat4 objectTransformation = mat4(1.0f);//rotate(mat4(1.0f), radians(90.0f), vec3(0.0f,0.0f,1.0f));
     mat4 model = mat4(1.0);
+    // mat4 view = rotate(translate(mat4(1.0f), vec3(0.0f, 0.0f, -3.0f)), radians(10.0f), vec3(0.0f,0.0f,1.0f)); 
+    // mat4 view = translate(mat4(1.0f), vec3(0.0f, 0.0f, -3.0f)); 
 
+    // mat4 view = lookAt(vec3(0.0f, 0.0f, 3.0f), vec3(0.0f, 0.0f,0.0f),vec3(0.0f, 1.0f, 0.0f)); 
+
+    // mat4 projection = perspective(radians(60.0f), (float)width/(float)height, 0.1f, 100.0f);
     mat4 view = mat4(1.0f);
     mat4 projection = mat4(1.0f);
 

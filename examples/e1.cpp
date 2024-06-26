@@ -15,6 +15,7 @@ int main() {
         r.vsIdentity(),
         r.fsConstant()
     );
+    
     vec4 vertices[] = {
 		vec4(-0.8,  0.0, 0.0, 1.0),
         vec4(-0.4, -0.8, 0.0, 1.0),
@@ -39,7 +40,8 @@ int main() {
 
         
         objectTransformation = mat4(1.0f);
-        // objectTransformation = rotate(objectTransformation, radians(-55.0f), vec3(1.0f,0.0f,0.0f));
+        // objectTransformation = rotate(objectTransformation, radians(-90.0f), vec3(0.0f,0.0f,1.0f));
+        // objectTransformation = translate(objectTransformation, vec3(0.0f,0.0f,2.0f));
         for(int i=0; i<4; i++) {
             tempvtex[i] = objectTransformation *   vertices[i]; 
         }

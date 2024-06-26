@@ -14,4 +14,9 @@ target_link_libraries(a1 GLEW::GLEW glm::glm OpenGL::GL SDL2)
 add_executable(e1 examples/e1.cpp)
 target_link_libraries(e1 a1)
 
+add_executable(algebra examples/algebra.cpp)
+target_link_libraries(algebra a1)
 
+
+add_executable(transformations examples/transformations.cpp)
+target_link_libraries(transformations a1)
