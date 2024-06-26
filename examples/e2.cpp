@@ -27,10 +27,16 @@ int main() {
 	};
 
     mat4 objectTransformation = mat4(1.0f);//rotate(mat4(1.0f), radians(90.0f), vec3(0.0f,0.0f,1.0f));
+    mat4 model = mat4(1.0);
+
+    mat4 view = mat4(1.0f);
+    mat4 projection = mat4(1.0f);
 
 	R::Object tickmark = r.createObject();
 	r.setVertexAttribs(tickmark, 0, 4, vertices);
 	r.setTriangleIndices(tickmark, 2, triangles);
+    // Enable dcepth test.
+    r.enableDepthTest();
     
     vec4 tempvtex[] = {vertices[0], vertices[1], vertices[2], vertices[3]};
     while (!r.shouldQuit()) {
@@ -41,7 +47,7 @@ int main() {
         objectTransformation = mat4(1.0f);
         // objectTransformation = rotate(objectTransformation, radians(-55.0f), vec3(1.0f,0.0f,0.0f));
         for(int i=0; i<4; i++) {
-            tempvtex[i] = objectTransformation *   vertices[i]; 
+            tempvtex[i] = projection* view * model *objectTransformation *   vertices[i]; 
         }
         r.setUniform<vec4>(program, "color", vec4(0.0, 0.6, 0.0, 1.0));
 		r.setVertexAttribs(tickmark, 0, 4, tempvtex);
