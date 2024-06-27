@@ -30,3 +30,6 @@ target_link_libraries(depth_testing2 a1)
 add_executable(shaders examples/shaders.cpp)
 target_link_libraries(shaders a1)
 
+add_executable(raytracing examples/raytracing.cpp)
+target_link_libraries(raytracing a1)
+
