@@ -13,8 +13,8 @@ int main() {
     if (!r.initialize("Example 1", width, height))
         return EXIT_FAILURE;
     R::ShaderProgram program = r.createShaderProgram(
-        r.vsIdentity(),
-        r.fsConstant()
+        r.vsDiffuseShading(),
+        r.fsDiffuseShading()
     );
 
     vec4 vertices[] = {
@@ -78,8 +78,44 @@ int main() {
 	};
 
     vec3 normals[] = {
-        vec3(0.0f,0.05f, 0.0f)
-    };
+        // Back Face
+        vec3(0.0f,0.0f, -1.0f),
+        vec3(0.0f,0.0f, -1.0f),
+        vec3(0.0f,0.0f, -1.0f),
+        vec3(0.0f,0.0f, -1.0f),
+
+        // Front Face
+        vec3(0.0f,0.0f, 1.0f),
+        vec3(0.0f,0.0f, 1.0f),
+        vec3(0.0f,0.0f, 1.0f),
+        vec3(0.0f,0.0f, 1.0f),
+
+        // Right Face
+        vec3(1.0f,0.0f, 0.0f),
+        vec3(1.0f,0.0f, 0.0f),
+        vec3(1.0f,0.0f, 0.0f),
+        vec3(1.0f,0.0f, 0.0f),
+
+        // Left Face
+        vec3(-1.0f,0.0f, 0.0f),
+        vec3(-1.0f,0.0f, 0.0f),
+        vec3(-1.0f,0.0f, 0.0f),
+        vec3(-1.0f,0.0f, 0.0f),
+
+        // Top Face
+        vec3(0.0f,1.0f, 0.0f),
+        vec3(0.0f,1.0f, 0.0f),
+        vec3(0.0f,1.0f, 0.0f),
+        vec3(0.0f,1.0f, 0.0f),
+
+        // Bottom Face
+        vec3(0.0f,-1.0f, 0.0f),
+        vec3(0.0f,-1.0f, 0.0f),
+        vec3(0.0f,-1.0f, 0.0f),
+        vec3(0.0f,-1.0f, 0.0f),
+        
+
+    };  
     mat4 objectTransformation = mat4(1.0f);//rotate(mat4(1.0f), radians(90.0f), vec3(0.0f,0.0f,1.0f));
 
 	R::Object cuboid = r.createObject();
@@ -108,7 +144,10 @@ int main() {
         vec4 o = vec4(eye,1.0f);
         view = inverse(mat4(e1,e2,e3,o));
         */
-        view = lookAt(vec3(-1.0f,1.0f,2.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));        
+        vec3 eye = vec3(-1.0f,-1.0f,2.0f);
+        vec3 gaze = vec3(0.0f,0.0f,0.0f);
+        vec3 up = vec3(0.0f,1.0f,0.0f);
+        view = lookAt(eye, gaze, up);        
 
         mat4 projection = mat4(1.0);
         // perspective transformation
@@ -131,18 +170,24 @@ int main() {
         // objectTransformation = translate(objectTransformation, vec3(1.0f,1.0f,0.0f));
         objectTransformation = translate(objectTransformation, vec3(-0.5f,-0.5f,-0.5f));
         for(int i=0; i<nvertices; i++) {
-            tempvtex[i] = projection * view * objectTransformation *   vertices[i]; 
+            tempvtex[i] = vertices[i]; 
         }
         
-        r.setUniform<vec4>(program, "color", vec4(0.8, 0.8, 0.8, 1.0));
-		
+        r.setUniform<mat4>(program, "model", objectTransformation);
+        r.setUniform<mat4>(program, "view", view);
+        r.setUniform<mat4>(program, "projection", projection);
+        r.setUniform<vec3>(program, "lightPos", eye);
+        r.setUniform<vec3>(program, "lightColor", vec3(1.0f,1.0f,1.0f));
+        r.setUniform<vec3>(program, "objectColor", vec3(0.8, 0.8, 0.8));
+
         r.setVertexAttribs(cuboid, 0, nvertices, tempvtex);
+        r.setVertexAttribs(cuboid, 1, nvertices, normals);
 	    r.setTriangleIndices(cuboid, ntriangles, triangles);
         r.setupFilledFaces();
         r.drawObject(cuboid);
        
         r.setupWireFrame();
-        r.setUniform<vec4>(program, "color", vec4(0.0, 0.0, 0.0, 1.0));
+        r.setUniform<vec3>(program, "objectColor", vec4(0.0, 0.0, 0.0, 1.0));
         r.drawObject(cuboid);
     
 

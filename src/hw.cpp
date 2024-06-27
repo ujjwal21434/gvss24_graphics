@@ -372,23 +372,45 @@ namespace GVSS24 {
 			const char *source = 
 				"#version 330 core\n"  
 				"in vec3 FragPos;\n"
-				"in vec3 Normal'\n"
+				"in vec3 Normal;\n"
 				"out vec4 fColor;\n"
 				"uniform vec3 lightPos;\n"
-				"uniform vec3 viewPos;\n"
 				"uniform vec3 lightColor;\n"
 				"uniform vec3 objectColor;\n"
 				"void main() {\n"
-				"float kd = 0.1;\n"
+				"float ka = 0.4;\n"
+				"vec3 ambient = vec3(ka);\n"
+				"float kd = 0.9;\n"
 				"vec3 norm = normalize(Normal);\n"
 				"vec3 lightDir = normalize(lightPos - FragPos);\n"
 				"float diff = max(dot(norm, lightDir),0.0);\n"
 				"vec3 diffuse = kd * diff * lightColor;\n"
-				"vec3 result = diffuse * objectColor;\n"
+				"vec3 result = (ambient + diffuse) * objectColor;\n"
 				"fColor = vec4(result, 1.0);\n"
 				"}\n";
 			return createShader(GL_FRAGMENT_SHADER, source);
 		}
+
+		// FragmentShader Rasterizer::fsDiffuseShading() {
+		// 	const char *source = 
+		// 		"#version 330 core\n"  
+		// 		"in vec3 FragPos;\n"
+		// 		"in vec3 Normal;\n"
+		// 		"out vec4 fColor;\n"
+		// 		"uniform vec3 lightPos;\n"
+		// 		"uniform vec3 lightColor;\n"
+		// 		"uniform vec3 objectColor;\n"
+		// 		"void main() {\n"
+		// 		"float kd = 0.1;\n"
+		// 		"vec3 norm = normalize(Normal);\n"
+		// 		"vec3 lightDir = normalize(lightPos - FragPos);\n"
+		// 		"float diff = max(dot(norm, lightDir),0.0);\n"
+		// 		"vec3 diffuse = kd * diff * lightColor;\n"
+		// 		"vec3 result = diffuse * objectColor;\n"
+		// 		"fColor = vec4(objectColor, 1.0);\n"
+		// 		"}\n";
+		// 	return createShader(GL_FRAGMENT_SHADER, source);
+		// }
 
 		FragmentShader Rasterizer::fsConstant() {
 			const char *source =
