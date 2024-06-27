@@ -359,7 +359,15 @@ namespace GVSS24 {
 				"}\n";
 			return createShader(GL_VERTEX_SHADER, source);
 		}
+
+		VertexShader Rasterizer::vsCreateShader(const char *source) {
+			return createShader(GL_VERTEX_SHADER, source);
+		}
 		
+		FragmentShader Rasterizer::fsCreateShader(const char *source) {
+			return createShader(GL_FRAGMENT_SHADER, source);
+		}
+
 		FragmentShader Rasterizer::fsDiffuseShading() {
 			const char *source = 
 				"#version 330 core\n"  
@@ -378,7 +386,7 @@ namespace GVSS24 {
 				"vec3 diffuse = kd * diff * lightColor;\n"
 				"vec3 result = diffuse * objectColor;\n"
 				"fColor = vec4(result, 1.0);\n"
-				"}\n"
+				"}\n";
 			return createShader(GL_FRAGMENT_SHADER, source);
 		}
 

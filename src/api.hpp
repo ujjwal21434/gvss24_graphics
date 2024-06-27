@@ -76,8 +76,12 @@ public:
 	// Lambertian Shading
 	VertexShader vsDiffuseShading();
 
+	VertexShader vsCreateShader(const char *source);
+	FragmentShader fsCreateShader(const char *source);
+
 	//
 	FragmentShader fsDiffuseShading();
+
 
 	// A fragment shader that returns a constant colour given by the uniform named 'color'.
 	FragmentShader fsConstant(); 
