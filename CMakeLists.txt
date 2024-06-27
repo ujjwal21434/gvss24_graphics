@@ -20,3 +20,6 @@ target_link_libraries(algebra a1)
 
 add_executable(transformations examples/transformations.cpp)
 target_link_libraries(transformations a1)
+
+add_executable(depth_testing examples/depth_testing.cpp)
+target_link_libraries(depth_testing a1)

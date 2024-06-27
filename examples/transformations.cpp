@@ -66,14 +66,22 @@ int main() {
         */
         view = lookAt(vec3(0.0f,1.0f,1.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));        
 
+        mat4 projection = mat4(1.0);
+        // perspective transformation
+        // b = -t
+        // l = -r
+        // t = 0.06
+        // r = 0.077
+
+        projection = perspective(radians(60.0f), (float)width/(float)height, 0.1f, 100.0f);
+
+
     for(int i=0; i<4; i++) {
         for(int j=0; j<4; j++) {
-            std::cout << view[i][j] << " ";
+            std::cout << projection[i][j] << " ";
         }
         std::cout << std::endl;
     }
-    mat4 projection = mat4(1.0);
-    projection = perspective(radians(60.0f), (float)width/(float)height, 0.1f, 100.0f);
 
     while (!r.shouldQuit()) {
         r.clear(vec4(1.0, 1.0, 1.0, 1.0));
