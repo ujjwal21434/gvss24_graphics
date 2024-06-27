@@ -73,6 +73,12 @@ public:
 	// A vertex shader that handles both transformation and color attributes.
 	VertexShader vsColorTransform();
 
+	// Lambertian Shading
+	VertexShader vsDiffuseShading();
+
+	//
+	FragmentShader fsDiffuseShading();
+
 	// A fragment shader that returns a constant colour given by the uniform named 'color'.
 	FragmentShader fsConstant(); 
 
