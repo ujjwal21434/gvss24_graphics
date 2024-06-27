@@ -4,7 +4,8 @@
 #include<iostream>
 namespace R = GVSS24::Hardware;
 using namespace glm;
-
+int nvertices = 24;
+int ntriangles = 12;
 int main() {
     int width = 640, height = 480;
 
@@ -15,27 +16,79 @@ int main() {
         r.vsIdentity(),
         r.fsConstant()
     );
+
     vec4 vertices[] = {
-		vec4(-0.8,  0.0, 0.0, 1.0),
-        vec4(-0.4, -0.8, 0.0, 1.0),
-        vec4( 0.8,  0.8, 0.0, 1.0),
-        vec4(-0.4, -0.4, 0.0, 1.0)
+        // Back Face
+        vec4(0.0,  0.0, 0.0, 1),
+        vec4(0.0, 1.0, 0.0,  1),
+        vec4( 1.0,  1.0, 0.0, 1),
+        vec4(1.0, 0.0, 0.0, 1),
+
+        // Front Face
+        vec4(0.0,  0.0, 1.0, 1),
+        vec4(0.0, 1.0, 1.0,  1),
+        vec4( 1.0,  1.0, 1.0, 1),
+        vec4(1.0, 0.0, 1.0, 1),
+
+        // Right Face 8
+        vec4( 1.0,  1.0, 0.0, 1),
+        vec4( 1.0,  1.0, 1.0, 1),
+        vec4(1.0, 0.0, 0.0, 1),
+        vec4(1.0, 0.0, 1.0, 1),
+
+        // Left Face 12
+        vec4(0.0,  0.0, 0.0, 1),
+        vec4(0.0, 1.0, 1.0,  1),
+        vec4(0.0, 1.0, 0.0,  1),
+        vec4(0.0,  0.0, 1.0, 1),
+
+        // Top Face 16
+        vec4(0.0, 1.0, 0.0,  1),
+        vec4(0.0, 1.0, 1.0,  1),
+        vec4( 1.0,  1.0, 1.0, 1),
+        vec4( 1.0,  1.0, 0.0, 1),
+
+        // Bottom Face 20
+        vec4(0.0,  0.0, 0.0, 1),
+        vec4(1.0, 0.0, 0.0, 1),
+        vec4(1.0, 0.0, 1.0, 1),
+        vec4(0.0,  0.0, 1.0, 1)
+
     };
+
 	ivec3 triangles[] = {
-		ivec3(0, 1, 3),
-		ivec3(1, 2, 3)
+        // Back Face
+		ivec3(0, 1, 2),
+		ivec3(0, 2, 3),
+        // Front Face
+        ivec3(4,5,6),
+        ivec3(4,6,7),
+        // Right Face
+        ivec3(8,9,10),
+        ivec3(10,9,11),
+        // Left Face
+        ivec3(12,13,14),
+        ivec3(12,15,13),
+        // Top Face
+        ivec3(16,17,18),
+        ivec3(16,18,19),
+        // Bottom Face
+        ivec3(20,21,22),
+        ivec3(20,22,23)
 	};
 
+    vec3 normals[] = {
+        vec3(0.0f,0.05f, 0.0f)
+    };
     mat4 objectTransformation = mat4(1.0f);//rotate(mat4(1.0f), radians(90.0f), vec3(0.0f,0.0f,1.0f));
 
-	R::Object tickmark = r.createObject();
-
-    vec4 tempvtex[4];
-    for(int i=0; i<4; i++) {
+	R::Object cuboid = r.createObject();
+	
+    vec4 tempvtex[nvertices];
+    for(int i=0; i<nvertices; i++) {
         tempvtex[i] = vertices[i];
     }
-       
-    mat4 view = mat4(1.0f);
+        mat4 view = mat4(1.0f);
         // view transformation
         /*
         vec3 eye = vec3(0.0f,1.0f,1.0f); // camera position
@@ -55,16 +108,17 @@ int main() {
         vec4 o = vec4(eye,1.0f);
         view = inverse(mat4(e1,e2,e3,o));
         */
-    view = lookAt(vec3(0.0f,0.0f,2.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));        
+        view = lookAt(vec3(-1.0f,1.0f,2.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));        
 
-    mat4 projection = mat4(1.0);
-    // perspective transformation
+        mat4 projection = mat4(1.0);
+        // perspective transformation
         // b = -t
         // l = -r
         // t = 0.06
         // r = 0.077
 
-    projection = perspective(radians(60.0f), (float)width/(float)height, 0.1f, 100.0f);
+        projection = perspective(radians(60.0f), (float)width/(float)height, 0.1f, 100.0f);
+
 
     r.enableDepthTest();
 
@@ -75,20 +129,21 @@ int main() {
         objectTransformation = mat4(1.0f);
         // objectTransformation = rotate(objectTransformation, radians(60.0f), vec3(1.0f,0.0f,0.0f));
         // objectTransformation = translate(objectTransformation, vec3(1.0f,1.0f,0.0f));
-        for(int i=0; i<4; i++) {
+        objectTransformation = translate(objectTransformation, vec3(-0.5f,-0.5f,-0.5f));
+        for(int i=0; i<nvertices; i++) {
             tempvtex[i] = projection * view * objectTransformation *   vertices[i]; 
         }
         
         r.setUniform<vec4>(program, "color", vec4(0.8, 0.8, 0.8, 1.0));
 		
-        r.setVertexAttribs(tickmark, 0, 4, tempvtex);
-	    r.setTriangleIndices(tickmark, 2, triangles);
+        r.setVertexAttribs(cuboid, 0, nvertices, tempvtex);
+	    r.setTriangleIndices(cuboid, ntriangles, triangles);
         r.setupFilledFaces();
-        r.drawObject(tickmark);
+        r.drawObject(cuboid);
        
         r.setupWireFrame();
         r.setUniform<vec4>(program, "color", vec4(0.0, 0.0, 0.0, 1.0));
-        r.drawObject(tickmark);
+        r.drawObject(cuboid);
     
 
         r.show();

@@ -15,27 +15,44 @@ int main() {
         r.vsIdentity(),
         r.fsConstant()
     );
+
     vec4 vertices[] = {
-		vec4(-0.8,  0.0, 0.0, 1.0),
-        vec4(-0.4, -0.8, 0.0, 1.0),
-        vec4( 0.8,  0.8, 0.0, 1.0),
-        vec4(-0.4, -0.4, 0.0, 1.0)
+        vec4(0.0,  0.0, 0.0, 1),
+        vec4(0.0, 1.0, 0.0,  1),
+        vec4( 1.0,  1.0, 0.0, 1),
+        vec4(1.0, 0.0, 0.0, 1),
+        vec4(0.0,  0.0, 1.0, 1),
+        vec4(0.0, 1.0, 1.0,  1),
+        vec4( 1.0,  1.0, 1.0, 1),
+        vec4(1.0, 0.0, 1.0, 1)
+        
     };
+
 	ivec3 triangles[] = {
-		ivec3(0, 1, 3),
-		ivec3(1, 2, 3)
+		ivec3(0, 1, 2),
+		ivec3(0, 2, 3),
+        ivec3(4,5,6),
+        ivec3(4,6,7),
+        ivec3(2,6,3),
+        ivec3(3,6,7),
+        ivec3(0,5,1),
+        ivec3(0,4,5),
+        ivec3(1,5,6),
+        ivec3(1,6,2),
+        ivec3(0,3,7),
+        ivec3(0,7,4)
 	};
 
     mat4 objectTransformation = mat4(1.0f);//rotate(mat4(1.0f), radians(90.0f), vec3(0.0f,0.0f,1.0f));
 
-	R::Object tickmark = r.createObject();
-
-    vec4 tempvtex[4];
-    for(int i=0; i<4; i++) {
+	R::Object cuboid = r.createObject();
+	r.setVertexAttribs(cuboid, 0, 8, vertices);
+	r.setTriangleIndices(cuboid, 12, triangles);
+    vec4 tempvtex[8];
+    for(int i=0; i<8; i++) {
         tempvtex[i] = vertices[i];
     }
-       
-    mat4 view = mat4(1.0f);
+        mat4 view = mat4(1.0f);
         // view transformation
         /*
         vec3 eye = vec3(0.0f,1.0f,1.0f); // camera position
@@ -55,16 +72,17 @@ int main() {
         vec4 o = vec4(eye,1.0f);
         view = inverse(mat4(e1,e2,e3,o));
         */
-    view = lookAt(vec3(0.0f,0.0f,2.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));        
+        view = lookAt(vec3(0.0f,0.0f,2.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));        
 
-    mat4 projection = mat4(1.0);
-    // perspective transformation
+        mat4 projection = mat4(1.0);
+        // perspective transformation
         // b = -t
         // l = -r
         // t = 0.06
         // r = 0.077
 
-    projection = perspective(radians(60.0f), (float)width/(float)height, 0.1f, 100.0f);
+        projection = perspective(radians(60.0f), (float)width/(float)height, 0.1f, 100.0f);
+
 
     r.enableDepthTest();
 
@@ -75,20 +93,21 @@ int main() {
         objectTransformation = mat4(1.0f);
         // objectTransformation = rotate(objectTransformation, radians(60.0f), vec3(1.0f,0.0f,0.0f));
         // objectTransformation = translate(objectTransformation, vec3(1.0f,1.0f,0.0f));
-        for(int i=0; i<4; i++) {
+        objectTransformation = translate(objectTransformation, vec3(-0.5f,-0.5f,-0.5f));
+        for(int i=0; i<8; i++) {
             tempvtex[i] = projection * view * objectTransformation *   vertices[i]; 
         }
         
         r.setUniform<vec4>(program, "color", vec4(0.8, 0.8, 0.8, 1.0));
 		
-        r.setVertexAttribs(tickmark, 0, 4, tempvtex);
-	    r.setTriangleIndices(tickmark, 2, triangles);
+        r.setVertexAttribs(cuboid, 0, 8, tempvtex);
+	    r.setTriangleIndices(cuboid, 12, triangles);
         r.setupFilledFaces();
-        r.drawObject(tickmark);
+        r.drawObject(cuboid);
        
         r.setupWireFrame();
         r.setUniform<vec4>(program, "color", vec4(0.0, 0.0, 0.0, 1.0));
-        r.drawObject(tickmark);
+        r.drawObject(cuboid);
     
 
         r.show();
