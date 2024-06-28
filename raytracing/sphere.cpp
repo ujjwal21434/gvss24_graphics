@@ -1,24 +1,44 @@
 #include "../src/color.h"
 #include "../src/ray.h"
 #include "../src/vec3.h"
-
+#include "../src/utility_functions.hpp"
 #include <iostream>
+#include <stdlib.h>
 
 
-bool hit_sphere(const point3& center, double radius, const ray& r) {
+
+// vec3 random_vec3() {
+//         return vec3(random_double(), random_double(), random_double());
+//     }
+
+// vec3 random_vec3(double min, double max) {
+//     return vec3(random_double(min,max), random_double(min,max), random_double(min,max));
+// }
+
+double hit_sphere(const point3& center, double radius, const ray& r) {
     vec3 oc = center - r.origin();
     double a = dot(r.direction(), r.direction());
     double b = - 2 * dot(r.direction(),oc);
     double c = dot(oc,oc) - radius * radius;
     double discriminant = b* b - 4 * a * c;
-    return (discriminant >= 0);
+    if(discriminant>=0){
+        return (-b-sqrt(discriminant)) / (2.0*a);
+    }
+    else
+        return -1;
 }
 
 
 color ray_color(const ray& r) {
-    if(hit_sphere(point3(0,0,-1), 0.5, r))
-        return color(1,0,0);
     vec3  unit_direction = unit_vector(r.direction());
+    point3 C = point3(0,0,-1);
+    double t = hit_sphere(C, 0.5, r);
+    if(t > 0.0) {
+        vec3 N = unit_vector(r.at(t) - C); // also we can use r.at(t)
+        // return color(1,0,0);
+        return 0.5 * color(N.x() + 1,N.y() + 1,N.z() + 1);
+
+        }
     float a = 0.5 * (unit_direction.y() + 1.0);
     return (1.0- a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7,1.0);
 }
