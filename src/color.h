@@ -7,15 +7,24 @@
 
 using color = vec3;
 
+
+double clamp(double x, double min_val, double max_val) {
+    if (x < min_val) return min_val;
+    if (x > max_val) return max_val;
+    return x;
+}
+
 void write_color(std::ostream& out, const color& pixel_color) {
     auto r = pixel_color.x();
     auto g = pixel_color.y();
     auto b = pixel_color.z();
 
     // Translate the [0,1] component values to the byte range [0,255].
-    int rbyte = int(255.999 * r);
-    int gbyte = int(255.999 * g);
-    int bbyte = int(255.999 * b);
+    double min_val = 0.1;
+    double max_val = 0.999;
+    int rbyte = int(256 * clamp(r,min_val, max_val));
+    int gbyte = int(256 * clamp(g, min_val, max_val));
+    int bbyte = int(256 * clamp(b,min_val, max_val));
 
     // Write out the pixel color components.
     out << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';

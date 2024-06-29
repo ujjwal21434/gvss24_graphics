@@ -38,3 +38,6 @@ target_link_libraries(raytracing a1)
 
 add_executable(sphere raytracing/sphere.cpp)
 target_link_libraries(sphere a1)
+
+add_executable(sphere_anti_aliasing raytracing/sphere_anti_aliasing.cpp)
+target_link_libraries(sphere_anti_aliasing a1)

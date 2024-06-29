@@ -5,7 +5,7 @@
 #include <iostream>
 #include <stdlib.h>
 
-
+int samples_per_pixel=100;
 
 // vec3 random_vec3() {
 //         return vec3(random_double(), random_double(), random_double());
@@ -14,6 +14,11 @@
 // vec3 random_vec3(double min, double max) {
 //     return vec3(random_double(min,max), random_double(min,max), random_double(min,max));
 // }
+vec3 sample_square() {
+    // Returns the vector to a random point in the [-.5,-.5]-[+.5,+.5] unit square.
+    return vec3(random_double() - 0.5, random_double() - 0.5, 0);
+}
+
 
 double hit_sphere(const point3& center, double radius, const ray& r) {
     vec3 oc = center - r.origin();
@@ -162,13 +167,20 @@ int main() {
     for (int j = 0; j < image_height; j++) {
         std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
         for (int i = 0; i < image_width; i++) {
-            point3 pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
-            vec3 ray_direction = pixel_center - camera_center;
-            ray r(camera_center, ray_direction);
-            color pixel_color = ray_color(r, 50);
-            // color pixel_color = ray_color(r);
+            // anti aliasing
+            color pixel_color(0,0,0);   
+            for(int sample = 0; sample < samples_per_pixel; sample++){
+                vec3 offset = sample_square();
+                vec3 pixel_sample = pixel00_loc
+                                + ((i + offset.x()) * pixel_delta_u)
+                                + ((j + offset.y()) * pixel_delta_v);
+                vec3 ray_direction = pixel_sample - camera_center;
+                ray r(camera_center, ray_direction);
+                pixel_color += ray_color(r, 50);
+                // color pixel_color = ray_color(r);
+            }
 
-            write_color(std::cout, pixel_color);
+            write_color(std::cout, pixel_color/(double)samples_per_pixel);
         }
     }
 
