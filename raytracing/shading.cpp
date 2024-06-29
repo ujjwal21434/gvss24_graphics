@@ -29,8 +29,6 @@ double hit_sphere(const point3& center, double radius, const ray& r) {
 }
 
 
-// Coloring by outward normal
-
 color ray_color(const ray& r) {
     vec3  unit_direction = unit_vector(r.direction());
     point3 C = point3(0,0,-1);
@@ -39,27 +37,6 @@ color ray_color(const ray& r) {
         vec3 N = unit_vector(r.at(t) - C); // also we can use r.at(t)
         // return color(1,0,0);
         return 0.5 * color(N.x() + 1,N.y() + 1,N.z() + 1);
-
-        }
-    float a = 0.5 * (unit_direction.y() + 1.0);
-    return (1.0- a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7,1.0);
-}
-
-color ray_color(const ray& r, int depth) {
-    if(depth == 0)
-        return color(0,0,0);
-    vec3  unit_direction = unit_vector(r.direction());
-    point3 C = point3(0,0,-1);
-    double t = hit_sphere(C, 0.5, r);
-    if(t > 0.0) {
-        vec3 N = unit_vector(r.at(t) - C); // also we can use r.at(t)
-        if(dot(N, r.direction()) < 0.0) {
-            vec3 direction = random_on_hemisphere(N);
-            ray new_ray(r.at(t), unit_vector(direction));
-            return 0.5 * ray_color(new_ray, depth-1);
-        }
-        // return color(1,0,0);
-        // return 0.5 * color(N.x() + 1,N.y() + 1,N.z() + 1);
 
         }
     float a = 0.5 * (unit_direction.y() + 1.0);
@@ -105,7 +82,7 @@ int main() {
             point3 pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
             vec3 ray_direction = pixel_center - camera_center;
             ray r(camera_center, ray_direction);
-            color pixel_color = ray_color(r, 5);
+            color pixel_color = ray_color(r);
             write_color(std::cout, pixel_color);
         }
     }

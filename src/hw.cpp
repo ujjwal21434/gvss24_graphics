@@ -309,7 +309,7 @@ namespace GVSS24 {
 				"layout(location = 0) in vec4 vertex;\n"
 				"uniform mat4 transform;\n"
 				"void main() {\n"
-				"	gl_Position = transform * vertex;\n"
+				"	gl_Position = transform * vertex;\n" 	
 				"}\n";
 			return createShader(GL_VERTEX_SHADER, source);
 		}

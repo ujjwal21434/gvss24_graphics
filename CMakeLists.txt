@@ -9,7 +9,7 @@ find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 
 add_library(a1 src/hw.cpp src/helpers.cpp)
-target_link_libraries(a1 GLEW::GLEW glm::glm OpenGL::GL SDL2::SDL2)
+target_link_libraries(a1 GLEW::GLEW glm::glm OpenGL::GL SDL2)
 
 add_executable(basic_example examples/basic_example.cpp)
 target_link_libraries(basic_example a1)

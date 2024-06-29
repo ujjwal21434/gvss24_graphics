@@ -144,7 +144,7 @@ int main() {
         vec4 o = vec4(eye,1.0f);
         view = inverse(mat4(e1,e2,e3,o));
         */
-        vec3 eye = vec3(-1.0f,-1.0f,2.0f);
+        vec3 eye = vec3(-1.0f,-1.0f,-2.0f);
         vec3 gaze = vec3(0.0f,0.0f,0.0f);
         vec3 up = vec3(0.0f,1.0f,0.0f);
         view = lookAt(eye, gaze, up);        
