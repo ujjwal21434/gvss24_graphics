@@ -12,9 +12,23 @@ int main() {
 	R::Rasterizer r;
     if (!r.initialize("Example 1", width, height))
         return EXIT_FAILURE;
+    const char *vs_source =
+                        "#version 330 core\n"
+                                        "layout(location = 0) in vec4 vertex;\n"
+                                        "void main() {\n"
+                                        "	gl_Position = vertex;\n"
+                                        "}\n";
+    const char *fs_source = 
+                        "#version 330 core\n"  
+                                        "uniform vec4 color;\n"
+                                        "out vec4 fColor;\n"
+                                        "void main() {\n"
+                                        "	fColor = color;\n"
+                                        "}\n";
+
     R::ShaderProgram program = r.createShaderProgram(
-        r.vsDiffuseShading(),
-        r.fsDiffuseShading()
+        r.vsCreateShader(vs_source),
+        r.fsCreateShader(fs_source)
     );
 
     vec4 vertices[] = {
@@ -170,24 +184,17 @@ int main() {
         // objectTransformation = translate(objectTransformation, vec3(1.0f,1.0f,0.0f));
         objectTransformation = translate(objectTransformation, vec3(-0.5f,-0.5f,-0.5f));
         for(int i=0; i<nvertices; i++) {
-            tempvtex[i] = vertices[i]; 
+            tempvtex[i] =projection * view * objectTransformation* vertices[i]; 
         }
-        
-        r.setUniform<mat4>(program, "model", objectTransformation);
-        r.setUniform<mat4>(program, "view", view);
-        r.setUniform<mat4>(program, "projection", projection);
-        r.setUniform<vec3>(program, "lightPos", eye);
-        r.setUniform<vec3>(program, "lightColor", vec3(1.0f,1.0f,1.0f));
-        r.setUniform<vec3>(program, "objectColor", vec3(0.8, 0.8, 0.8));
 
         r.setVertexAttribs(cuboid, 0, nvertices, tempvtex);
-        r.setVertexAttribs(cuboid, 1, nvertices, normals);
 	    r.setTriangleIndices(cuboid, ntriangles, triangles);
         r.setupFilledFaces();
+        r.setUniform<vec4>(program, "color", vec4(0.8,0.8,0.8,1.0));
         r.drawObject(cuboid);
        
         r.setupWireFrame();
-        r.setUniform<vec3>(program, "objectColor", vec4(0.0, 0.0, 0.0, 1.0));
+        r.setUniform<vec4>(program, "color", vec4(0.0, 0.0, 0.0, 1.0));
         r.drawObject(cuboid);
     
 

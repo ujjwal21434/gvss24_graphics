@@ -314,25 +314,6 @@ namespace GVSS24 {
 			return createShader(GL_VERTEX_SHADER, source);
 		}
 
-		VertexShader Rasterizer::vsDiffuseShading() {
-			const char *source =
-				"#version 330 core\n"
-				"layout(location = 0) in vec3 vertex;\n"
-				"layout(location = 1) in vec3 normal;\n"
-				"uniform mat4 model;\n"
-				"uniform mat4 view;\n"
-				"uniform mat4 projection;\n"
-				"out vec3 FragPos;\n"
-				"out vec3 Normal;\n"
-				"void main() {\n"
-				"FragPos = mat3(model) * vertex;\n"
-				"Normal = transpose(inverse(mat3(model))) * normal;\n"
-				"	gl_Position = projection * view * model * vec4(vertex,1.0);\n"
-				"}\n";
-			return createShader(GL_VERTEX_SHADER, source);
-		}
-
-
 		VertexShader Rasterizer::vsColor() {
 			const char *source =
 				"#version 330 core\n"
@@ -367,50 +348,6 @@ namespace GVSS24 {
 		FragmentShader Rasterizer::fsCreateShader(const char *source) {
 			return createShader(GL_FRAGMENT_SHADER, source);
 		}
-
-		FragmentShader Rasterizer::fsDiffuseShading() {
-			const char *source = 
-				"#version 330 core\n"  
-				"in vec3 FragPos;\n"
-				"in vec3 Normal;\n"
-				"out vec4 fColor;\n"
-				"uniform vec3 lightPos;\n"
-				"uniform vec3 lightColor;\n"
-				"uniform vec3 objectColor;\n"
-				"void main() {\n"
-				"float ka = 0.4;\n"
-				"vec3 ambient = vec3(ka);\n"
-				"float kd = 0.9;\n"
-				"vec3 norm = normalize(Normal);\n"
-				"vec3 lightDir = normalize(lightPos - FragPos);\n"
-				"float diff = max(dot(norm, lightDir),0.0);\n"
-				"vec3 diffuse = kd * diff * lightColor;\n"
-				"vec3 result = (ambient + diffuse) * objectColor;\n"
-				"fColor = vec4(result, 1.0);\n"
-				"}\n";
-			return createShader(GL_FRAGMENT_SHADER, source);
-		}
-
-		// FragmentShader Rasterizer::fsDiffuseShading() {
-		// 	const char *source = 
-		// 		"#version 330 core\n"  
-		// 		"in vec3 FragPos;\n"
-		// 		"in vec3 Normal;\n"
-		// 		"out vec4 fColor;\n"
-		// 		"uniform vec3 lightPos;\n"
-		// 		"uniform vec3 lightColor;\n"
-		// 		"uniform vec3 objectColor;\n"
-		// 		"void main() {\n"
-		// 		"float kd = 0.1;\n"
-		// 		"vec3 norm = normalize(Normal);\n"
-		// 		"vec3 lightDir = normalize(lightPos - FragPos);\n"
-		// 		"float diff = max(dot(norm, lightDir),0.0);\n"
-		// 		"vec3 diffuse = kd * diff * lightColor;\n"
-		// 		"vec3 result = diffuse * objectColor;\n"
-		// 		"fColor = vec4(objectColor, 1.0);\n"
-		// 		"}\n";
-		// 	return createShader(GL_FRAGMENT_SHADER, source);
-		// }
 
 		FragmentShader Rasterizer::fsConstant() {
 			const char *source =
