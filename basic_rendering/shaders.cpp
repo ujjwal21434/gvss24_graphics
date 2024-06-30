@@ -2,6 +2,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include<iostream>
+#include<fstream>
+#include <sstream>
+
 namespace R = GVSS24::Hardware;
 using namespace glm;
 int nvertices = 24;
@@ -12,23 +15,28 @@ int main() {
 	R::Rasterizer r;
     if (!r.initialize("Example 1", width, height))
         return EXIT_FAILURE;
-    const char *vs_source =
-                        "#version 330 core\n"
-                                        "layout(location = 0) in vec4 vertex;\n"
-                                        "void main() {\n"
-                                        "	gl_Position = vertex;\n"
-                                        "}\n";
-    const char *fs_source = 
-                        "#version 330 core\n"  
-                                        "uniform vec4 color;\n"
-                                        "out vec4 fColor;\n"
-                                        "void main() {\n"
-                                        "	fColor = color;\n"
-                                        "}\n";
+    // read shader code
+    std::ifstream vShaderFile;
+    std::ifstream fShaderFile;
+    vShaderFile.open("vs.sh");
+    fShaderFile.open("fs.sh");
+    std::stringstream vShaderStream, fShaderStream;
+    // read file's buffer contents into streams
+    vShaderStream << vShaderFile.rdbuf();
+    fShaderStream << fShaderFile.rdbuf();
+    // close file handlers
+    vShaderFile.close();
+    fShaderFile.close();
+    // convert stream into string
+    const char *vs_source = vShaderStream.str().c_str();
+    const char *fs_source = vShaderStream.str().c_str();
+
 
     R::ShaderProgram program = r.createShaderProgram(
         r.vsCreateShader(vs_source),
         r.fsCreateShader(fs_source)
+        // r.vsIdentity(),
+        // r.fsConstant()
     );
 
     vec4 vertices[] = {
