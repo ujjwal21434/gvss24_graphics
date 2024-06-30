@@ -1,5 +1,4 @@
 #include "../src/color.h"
-#include "../src/ray.h"
 #include "../src/vec3.h"
 
 #include <iostream>
