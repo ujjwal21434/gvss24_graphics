@@ -217,11 +217,14 @@ int main() {
 	    
         r.setTriangleIndices(cuboid, ntriangles, triangles);
         r.setupFilledFaces();
-        r.setUniform<vec4>(program, "color", vec4(1.0f,0.8f,0.8f,1.0f));
+        r.setUniform<vec3>(program, "lightPos", eye);
+        r.setUniform<vec3>(program, "lightColor", vec3(1.0,1.0,1.0));
+        r.setUniform<vec3>(program, "objectColor", vec3(0.8,0.8,0.8));
+
         r.drawObject(cuboid);
        
         r.setupWireFrame();
-        r.setUniform<vec4>(program, "color", vec4(0.0f, 0.0f, 0.0f, 1.0f));
+        r.setUniform<vec3>(program, "objectColor", vec3(0.0f, 0.0f, 0.0f));
         r.drawObject(cuboid);
     
 
