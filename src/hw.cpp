@@ -273,7 +273,7 @@ namespace GVSS24 {
 
 
 
-		GLuint createShader(GLenum type, const char *source) {
+		GLuint createShader(GLenum type, const char *source, bool vtexShader) {
 			GLuint shader = glCreateShader(type);
 			glShaderSource(shader, 1, &source, NULL);
 			glCompileShader(shader);
@@ -285,7 +285,11 @@ namespace GVSS24 {
 				glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 				std::vector<GLchar> infoLog(maxLength);
 				glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
-				std::cout << &infoLog[0] << std::endl;
+				// std::cout << &infoLog[0] << std::endl;
+				if(vtexShader)
+					 std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << &infoLog << std::endl;
+				else
+					 std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << &infoLog << std::endl;
 				glDeleteShader(shader);
 				return 0;
 			}
@@ -300,7 +304,7 @@ namespace GVSS24 {
 				"void main() {\n"
 				"	gl_Position = vertex;\n"
 				"}\n";
-			return createShader(GL_VERTEX_SHADER, source);
+			return createShader(GL_VERTEX_SHADER, source,true);
 		}
 
 		VertexShader Rasterizer::vsTransform() {
@@ -311,7 +315,7 @@ namespace GVSS24 {
 				"void main() {\n"
 				"	gl_Position = transform * vertex;\n" 	
 				"}\n";
-			return createShader(GL_VERTEX_SHADER, source);
+			return createShader(GL_VERTEX_SHADER, source,true);
 		}
 
 		VertexShader Rasterizer::vsColor() {
@@ -324,7 +328,7 @@ namespace GVSS24 {
 				"	gl_Position = vertex;\n"
 				"	color = vColor;\n"
 				"}\n";
-			return createShader(GL_VERTEX_SHADER, source);
+			return createShader(GL_VERTEX_SHADER, source,true);
 		}
 		
 		VertexShader Rasterizer::vsColorTransform() {
@@ -338,15 +342,15 @@ namespace GVSS24 {
 				"	gl_Position = transform * vertex;\n"
 				"	color = vColor;\n"
 				"}\n";
-			return createShader(GL_VERTEX_SHADER, source);
+			return createShader(GL_VERTEX_SHADER, source,true);
 		}
 
 		VertexShader Rasterizer::vsCreateShader(const char *source) {
-			return createShader(GL_VERTEX_SHADER, source);
+			return createShader(GL_VERTEX_SHADER, source,true);
 		}
 		
 		FragmentShader Rasterizer::fsCreateShader(const char *source) {
-			return createShader(GL_FRAGMENT_SHADER, source);
+			return createShader(GL_FRAGMENT_SHADER, source,false);
 		}
 
 		FragmentShader Rasterizer::fsConstant() {
@@ -357,7 +361,7 @@ namespace GVSS24 {
 				"void main() {\n"
 				"	fColor = color;\n"
 				"}\n";
-			return createShader(GL_FRAGMENT_SHADER, source);
+			return createShader(GL_FRAGMENT_SHADER, source,false);
 		}
 
 		FragmentShader Rasterizer::fsIdentity() {
@@ -368,7 +372,7 @@ namespace GVSS24 {
 				"void main() {\n"
 				"	fColor = color;\n"
 				"}\n";
-			return createShader(GL_FRAGMENT_SHADER, source);
+			return createShader(GL_FRAGMENT_SHADER, source,false);
 		}
 
 	}

@@ -1,6 +1,9 @@
 #version 330 core
-    uniform vec4 color;
-    out vec4 fColor;
-    void main() {
-    fColor = color;
-}
+out vec4 FragColor;
+  
+uniform vec4 color; // we set this variable in the OpenGL code.
+
+void main()
+{
+    FragColor = color;
+}   

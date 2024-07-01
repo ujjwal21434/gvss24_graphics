@@ -15,26 +15,40 @@ int main() {
 	R::Rasterizer r;
     if (!r.initialize("Example 1", width, height))
         return EXIT_FAILURE;
+
     // read shader code
+    std::string vertexCode;
+    std::string fragmentCode;
     std::ifstream vShaderFile;
     std::ifstream fShaderFile;
-    vShaderFile.open("vs.sh");
-    fShaderFile.open("fs.sh");
-    std::stringstream vShaderStream, fShaderStream;
-    // read file's buffer contents into streams
-    vShaderStream << vShaderFile.rdbuf();
-    fShaderStream << fShaderFile.rdbuf();
-    // close file handlers
-    vShaderFile.close();
-    fShaderFile.close();
-    // convert stream into string
-    const char *vs_source = vShaderStream.str().c_str();
-    const char *fs_source = vShaderStream.str().c_str();
-
-
+    // ensure ifstream objects can throw exceptions:
+    vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+    fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+    try 
+    {
+        // open files
+        vShaderFile.open("../basic_rendering/vs.sh");
+        fShaderFile.open("../basic_rendering/fs.sh");
+        std::stringstream vShaderStream, fShaderStream;
+        // read file's buffer contents into streams
+        vShaderStream << vShaderFile.rdbuf();
+        fShaderStream << fShaderFile.rdbuf();		
+        // close file handlers
+        vShaderFile.close();
+        fShaderFile.close();
+        // convert stream into string
+        vertexCode   = vShaderStream.str();
+        fragmentCode = fShaderStream.str();		
+    }
+    catch(std::ifstream::failure e)
+    {
+        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+    }
+    const char* vShaderCode = vertexCode.c_str();
+    const char* fShaderCode = fragmentCode.c_str();
     R::ShaderProgram program = r.createShaderProgram(
-        r.vsCreateShader(vs_source),
-        r.fsCreateShader(fs_source)
+        r.vsCreateShader(vShaderCode),
+        r.fsCreateShader(fShaderCode)
         // r.vsIdentity(),
         // r.fsConstant()
     );
@@ -182,7 +196,6 @@ int main() {
 
 
     r.enableDepthTest();
-
     while (!r.shouldQuit()) {
         r.clear(vec4(1.0, 1.0, 1.0, 1.0));
         r.useShaderProgram(program);
@@ -198,11 +211,11 @@ int main() {
         r.setVertexAttribs(cuboid, 0, nvertices, tempvtex);
 	    r.setTriangleIndices(cuboid, ntriangles, triangles);
         r.setupFilledFaces();
-        r.setUniform<vec4>(program, "color", vec4(0.8,0.8,0.8,1.0));
+        r.setUniform<vec4>(program, "color", vec4(1.0f,0.8f,0.8f,1.0f));
         r.drawObject(cuboid);
        
         r.setupWireFrame();
-        r.setUniform<vec4>(program, "color", vec4(0.0, 0.0, 0.0, 1.0));
+        r.setUniform<vec4>(program, "color", vec4(0.0f, 0.0f, 0.0f, 1.0f));
         r.drawObject(cuboid);
     
 
