@@ -204,12 +204,18 @@ int main() {
         // objectTransformation = rotate(objectTransformation, radians(60.0f), vec3(1.0f,0.0f,0.0f));
         // objectTransformation = translate(objectTransformation, vec3(1.0f,1.0f,0.0f));
         objectTransformation = translate(objectTransformation, vec3(-0.5f,-0.5f,-0.5f));
-        for(int i=0; i<nvertices; i++) {
-            tempvtex[i] =projection * view * objectTransformation* vertices[i]; 
-        }
+        // for(int i=0; i<nvertices; i++) {
+        //     tempvtex[i] =projection * view * objectTransformation* vertices[i]; 
+        // }
+        r.setUniform<mat4>(program, "model", objectTransformation); 
+        r.setUniform<mat4>(program, "view", view);        
+        r.setUniform<mat4>(program, "projection", projection);        
+
 
         r.setVertexAttribs(cuboid, 0, nvertices, tempvtex);
-	    r.setTriangleIndices(cuboid, ntriangles, triangles);
+        r.setVertexAttribs(cuboid, 1, nvertices, normals);
+	    
+        r.setTriangleIndices(cuboid, ntriangles, triangles);
         r.setupFilledFaces();
         r.setUniform<vec4>(program, "color", vec4(1.0f,0.8f,0.8f,1.0f));
         r.drawObject(cuboid);
