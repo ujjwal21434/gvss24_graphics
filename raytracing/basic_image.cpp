@@ -1,7 +1,25 @@
 #include "../src/color.h"
 #include "../src/vec3.h"
-
+#include "../src/ray.h"
 #include <iostream>
+
+double hit_sphere(const ray& r, vec3 center, double radius) {
+        vec3 oc = center - r.origin();
+        double a = dot(r.direction(), r.direction());
+        double b = - 2 * dot(r.direction(),oc);
+        double c = dot(oc,oc) - radius * radius;
+        double discriminant = b* b - 4 * a * c;
+        if(discriminant>=0){
+            return (-b-sqrt(discriminant)) / (2.0*a);
+        }
+        else
+            return -1;
+    }
+
+color ray_color(const ray& r) {
+     float a = 0.5 * (unit_vector(r.direction()).y() + 1.0);
+    return (1.0- a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7,1.0);
+}
 
 int main() {
 
@@ -46,8 +64,8 @@ int main() {
                                 + ((j) * pixel_delta_v);
                 vec3 ray_direction = unit_vector(pixel_sample - camera_center); 
                 ray r(camera_center, ray_direction);
-                
-                auto pixel_color = color(double(i)/(image_width - 1), double(j)/(image_height-1), 0);
+
+                auto pixel_color = ray_color(r);
             write_color(std::cout, pixel_color);
         }
     }
