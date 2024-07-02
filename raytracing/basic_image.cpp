@@ -17,6 +17,15 @@ double hit_sphere(const ray& r, vec3 center, double radius) {
     }
 
 color ray_color(const ray& r) {
+    point3 center = point3(0,0,-1);
+    double radius = 0.5;
+    double t = hit_sphere(r, center,radius);
+
+    if(t >0) {
+        return color(0.8,0.8,0.8);
+    }
+
+
      float a = 0.5 * (unit_vector(r.direction()).y() + 1.0);
     return (1.0- a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7,1.0);
 }
