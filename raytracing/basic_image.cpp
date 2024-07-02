@@ -41,7 +41,13 @@ int main() {
     for(int j=0; j<image_height; j++) {
         std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
         for(int i=0; i< image_width; i++) {
-            auto pixel_color = color(double(i)/(image_width - 1), double(j)/(image_height-1), 0);
+                 vec3 pixel_sample = pixel00_loc
+                                + ((i) * pixel_delta_u)
+                                + ((j) * pixel_delta_v);
+                vec3 ray_direction = unit_vector(pixel_sample - camera_center); 
+                ray r(camera_center, ray_direction);
+                
+                auto pixel_color = color(double(i)/(image_width - 1), double(j)/(image_height-1), 0);
             write_color(std::cout, pixel_color);
         }
     }
