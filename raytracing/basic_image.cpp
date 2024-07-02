@@ -20,14 +20,17 @@ color ray_color(const ray& r) {
     point3 center = point3(0,0,-1);
     double radius = 0.5;
     double t = hit_sphere(r, center,radius);
+    point3 clight = point3(0.5,0.5,1);
 
     if(t >0) {
-        return color(0.8,0.8,0.8);
+        point3 hitPt = r.at(t);
+        vec3 lightDir = unit_vector(clight - hitPt);
+        vec3 Normal = unit_vector(hitPt - center);
+            return color(0.8,0.4,0.4) * 0.8 * std::max(0.0,dot(Normal, lightDir));
     }
 
 
-     float a = 0.5 * (unit_vector(r.direction()).y() + 1.0);
-    return (1.0- a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7,1.0);
+    return color(0,0,0);
 }
 
 int main() {
