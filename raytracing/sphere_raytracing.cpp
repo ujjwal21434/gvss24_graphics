@@ -22,12 +22,15 @@ Plane planeObjects[planes];
 //     return vec3(random_double(min,max), random_double(min,max), random_double(min,max));
 // }
 
+// Checks ray intersection with all the objects in the world
 void hit_objects(const ray& r) {
     double t = 9999.0;
     double temp_t;
     int hitIdx = 0;
     bool hit = false;
     hit_record.t = -1.0;
+    // Ray Sphere intersection 
+    // The sphere object has a function hit_sphere(ray r) function that takes in the ray and returns t
     for(int i=0; i<spheres; i++) {
         temp_t = sphereObjects[i].hit_sphere(r);
         if(temp_t >0 && temp_t < t) {
@@ -37,6 +40,8 @@ void hit_objects(const ray& r) {
             hit_record.sphere = true;
         }
     }
+    // Ray Plane intersection
+    // The plane object has a function hit_sphere(ray r) function that takes in the ray and returns t
     for(int i=0; i<planes; i++) {
         temp_t = planeObjects[i].hit_plane(r);
         if(temp_t >0 && temp_t < t) {
@@ -52,28 +57,19 @@ void hit_objects(const ray& r) {
     }   
 }
 
-// Coloring by outward normal
-
-color ray_color(const ray& r) {
-    vec3  unit_direction = unit_vector(r.direction());
-
-    hit_objects(r);
-    
-    if(hit_record.t > 0.0) {
-        vec3 N = unit_vector(r.at(hit_record.t) - sphereObjects[hit_record.hitIdx].getCenter()); // also we can use r.at(t)
-        return 0.5 * color(N.x() + 1,N.y() + 1,N.z() + 1);
-    }    
-
-    float a = 0.5 * (unit_direction.y() + 1.0);
-    return (1.0- a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7,1.0);
-}
-
 color ray_color(const ray& r, int depth) {
     if(depth == 0)
         return color(0,0,0);
     vec3  unit_direction = unit_vector(r.direction());
-    
+    // test for hit
     hit_objects(r);
+    // hit record is a struct that contains three variables t, hitIdx, and a boolean sphere
+    // if hit_record.sphere is True, then the nearest object is a sphere. 
+    // hitIdx contains the index of the respective object in the sphere array or plane array.
+    // If hit_record.sphere is True, the hitIdx is the index in the spheres array 
+    // else it is the index in the planes array
+    // If the ray does not hit any object, then hit_record.t is -1
+
     if(hit_record.t > 0.0) {
         if(hit_record.sphere) {
             vec3 N = unit_vector(r.at(hit_record.t) - sphereObjects[hit_record.hitIdx].getCenter()); // also we can use r.at(t)
@@ -105,8 +101,7 @@ color ray_color(const ray& r, int depth) {
 
         return color(0,0,0);
 
-    // float a = 0.5 * (unit_direction.y() + 1.0);
-    // return (1.0- a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7,1.0);
+
 }
 int main() {
     // Init hit_record
@@ -140,9 +135,13 @@ int main() {
     point3 pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
     // Add objects
+    // Add a sphere object
+    // Sphere sphere = Sphere(point3 center, double radius, double Kd, double Ks, double Ka, double Ka, color objectColor)
     sphereObjects[0] = Sphere(point3(0,0.0,-1), 0.5, 0.8, 0.9, 0.1, color(0.8f, 0.4f, 0.8f));
     sphereObjects[1] = Sphere(point3(0,-100.5,-1),  0.0, 0.4, 0.2, 0.1, color(0.4f,0.6f,0.6f));
     lightObjects[0] = Sphere(point3(0.5,0.5,1), 0.1, 1.0, color(1.0f,1.0f,1.0f));
+    // Add a plane object
+    // Plane plane = Plane(point3 center, vec3 Normal, vec3 Xmin, vec3 Xmax, double Kd, color objectColor);
     planeObjects[0] = Plane(point3(0,0,-0.8), unit_vector(vec3(0,1,1)), vec3(-1,-1,-1), vec3(1,1,1), 0.2, color(0.8,0.8,0.8));
 
     // Render

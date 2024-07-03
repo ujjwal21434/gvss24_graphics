@@ -8,9 +8,9 @@ int main() {
     // vectors/points
     // declaring a vector
     vec3 a, b, c;
-    a = vec3(1.0,0.0,0.0);
-    b = vec3(0.0,1.0,0.0);
-    c = vec3(0.0,0.0,1.0);
+    a = vec3(1.0,2.0,3.0);
+    b = vec3(0.7,1.0,4.0);
+    c = vec3(1.0,0.0,1.0);
 
     // vector vector arithmetic 
     // sum
@@ -27,6 +27,9 @@ int main() {
     point3 center;
     center = point3(1,1,1); // vec3(1,1,1) also works
 
+    // vector vector elemenwise product
+    vec3 ab = a*b;
+    std::cout << ab[0] << " " << ab[1] << " " << ab[2];
 
 
     // color
