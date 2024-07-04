@@ -4,13 +4,22 @@
 #include "../src/utility_functions.hpp"
 #include "../src/sphere.hpp"
 #include "../src/plane.hpp"
+#include "../src/cylinder.hpp"
+#include "../src/box.hpp"
+
 
 #include <iostream>
 #include <stdlib.h>
 const int spheres = 2;
-const int planes = 1;
+const int planes = 5;
+const int cylinders = 1;
+const int boxes = 1;
+
 Sphere sphereObjects[spheres];
 Sphere lightObjects[1];
+
+Cylinder cylinderObjects[cylinders];
+
 
 Plane planeObjects[planes];
 
@@ -51,6 +60,9 @@ void hit_objects(const ray& r) {
             hit_record.sphere = false;
         }
     }
+
+
+
     if(hit){
         hit_record.t = t;
         hit_record.hitIdx = hitIdx; 
@@ -103,6 +115,11 @@ color ray_color(const ray& r, int depth) {
 
 
 }
+
+
+
+
+
 int main() {
     // Init hit_record
     hit_record.t = -1.0;
@@ -110,7 +127,7 @@ int main() {
     // Image
 
     auto aspect_ratio = 16.0 / 9.0;
-    int image_width = 400;
+    int image_width = 700;
 
     // Calculate the image height, and ensure that it's at least 1.
     int image_height = int(image_width / aspect_ratio);
@@ -137,12 +154,30 @@ int main() {
     // Add objects
     // Add a sphere object
     // Sphere sphere = Sphere(point3 center, double radius, double Kd, double Ks, double Ka, double Ka, color objectColor)
-    sphereObjects[0] = Sphere(point3(0,0.0,-1), 0.5, 0.8, 0.9, 0.1, color(0.8f, 0.4f, 0.8f));
+    //sphereObjects[0] = Sphere(point3(0.3,-0.1,-0.6), 0.2, 0.8, 0.9, 0.1, color(0.8f, 0.4f, 0.8f));
+    sphereObjects[0] = Sphere(point3(0.4,0,-1), 0.3, 0.8, 0.9, 0.1, color(0.8f, 0.4f, 0.8f));
+    
+    //sphereObjects[0] = Sphere(point3(0, 0.0, -1), 0.3, 0.8, 0.9, 0.1, color(0.6f, 0.2f, 0.8f));
     sphereObjects[1] = Sphere(point3(0,-100.5,-1),  0.0, 0.4, 0.2, 0.1, color(0.4f,0.6f,0.6f));
+
+    //cylinderObjects[0] = Cylinder(point3(-0.4, 0.0, -1), 0.5, 1.0, 0.6, color(0.3f, 0.7f, 0.9f));
+    
+
     lightObjects[0] = Sphere(point3(0.5,0.5,1), 0.1, 1.0, color(1.0f,1.0f,1.0f));
     // Add a plane object
     // Plane plane = Plane(point3 center, vec3 Normal, vec3 Xmin, vec3 Xmax, double Kd, color objectColor);
-    planeObjects[0] = Plane(point3(0,0,-0.8), unit_vector(vec3(0,1,1)), vec3(-1,-1,-1), vec3(1,1,1), 0.2, color(0.8,0.8,0.8));
+    //bottom
+    planeObjects[0] = Plane(point3(0,0,-1.5), unit_vector(vec3(0,1,0.8)), vec3(-2,-1,-1), vec3(2,1,1), 0.2, color(0.8,0.8,0.8));
+    //top
+    planeObjects[1] = Plane(point3(0,0,-1.5), unit_vector(vec3(0,-1,0.8)), vec3(-2,-1,-1), vec3(2,1,1), 0.2, color(0.8,0.8,0.8));
+    //back
+    planeObjects[2] = Plane(point3(0,0,-1.0), unit_vector(vec3(0,0,1.0)), vec3(-2,-1,-1), vec3(2,1,1), 0.2, color(0.8,0.8,0.8));
+    //right
+    planeObjects[3] = Plane(point3(0.2,0,-1.5), unit_vector(vec3(-1,0,1.0)), vec3(-1.5,-1,-1), vec3(1.5,1,1), 0.2, color(0.8,0.8,0.8));
+    //left
+    planeObjects[4] = Plane(point3(-0.2,0,-1.5), unit_vector(vec3(1,0,1.0)), vec3(-1.5,-1,-1), vec3(1.5,1,1), 0.2, color(0.8,0.8,0.8));
+
+    
 
     // Render
 

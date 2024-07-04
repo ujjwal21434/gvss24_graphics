@@ -6,6 +6,8 @@ struct {
     double t;
     int hitIdx;
     bool sphere;
+    bool cylinder;
+    bool box;
 }hit_record;
 inline double random_double() {
     // Returns a random real in [0,1).
