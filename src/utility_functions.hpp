@@ -8,6 +8,7 @@ struct {
     bool sphere;
     bool cylinder;
     bool box;
+    bool cone;
 }hit_record;
 inline double random_double() {
     // Returns a random real in [0,1).
